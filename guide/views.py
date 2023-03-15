@@ -2,13 +2,12 @@ from django.contrib.auth import login
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView
 from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponseRedirect
 
-from .forms import CustomUserCreationForm, SurfSpotForm, LoginForm
-from .models import SurfSpot, CustomUser
+from .forms import CustomUserCreationForm, SurfSpotForm, UserProfileForm
+from .models import SurfSpot
 
 
 class HomeView(View):
@@ -28,11 +27,23 @@ class SpotsListView(ListView):
 class RegisterView(FormView):
     template_name = 'guide/register.html'
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('user_profile_form')
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
+        return super().form_valid(form)
+
+
+class UserProfileFormView(FormView):
+    template_name = 'guide/user_profile_form.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        user_profile = form.save(commit=False)
+        user_profile.user = self.request.user
+        user_profile.save()
         return super().form_valid(form)
 
 

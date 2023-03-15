@@ -26,7 +26,6 @@ class UserProfile(models.Model):
     Model for user profile
     """
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-    nickname = models.CharField(max_length=64, blank=True, null=True)
     country = CountryField(blank_label='(select country)', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     home_spot = models.ForeignKey('SurfSpot', on_delete=models.SET_NULL, blank=True, null=True)

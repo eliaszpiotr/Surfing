@@ -9,8 +9,8 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'nickname', 'country', 'home_spot',)
-    search_fields = ('user__username', 'nickname', 'country',)
+    list_display = ('user', 'country', 'home_spot',)
+    search_fields = ('user__username', 'country',)
     list_filter = ('country',)
 
 
