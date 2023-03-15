@@ -62,7 +62,8 @@ class SurfSpot(models.Model):
     name = models.CharField(max_length=64, unique=True, blank=False, null=False)
     description = models.TextField()
     country = CountryField(blank_label='(select country)', blank=False, null=False)
-    # location = models.PointField(blank=False, null=False, extent=[-180, -90, 180, 90], tolerance=0.00001)
+    latitude = models.FloatField(blank=False, null=False)
+    longitude = models.FloatField(blank=False, null=False)
 
     class Continent(models.TextChoices):
         AFRICA = 'AF', 'Africa'
@@ -136,7 +137,7 @@ class SurfSpot(models.Model):
 
     difficulty = models.IntegerField(choices=Difficulty.choices, blank=True, null=True)
 
-    danger = models.ManyToManyField(Danger)
+    danger = models.ManyToManyField(Danger, blank=True)
 
     def __str__(self):
         return f'{self.name}, {self.continent}'

@@ -1,0 +1,36 @@
+{% extends 'guide/base.html' %}
+
+{% block content %}
+
+  <div id="login-form-container">
+    <h3>Login</h3>
+    <form id="login-form" method="post">
+      {% csrf_token %}
+      {{ login_form.as_p }}
+      <button type="submit" name="submit" value="login">Login</button>
+    </form>
+    <p>If you don't have an account, <a href="#" onclick="showRegisterForm()">click here</a> to register.</p>
+  </div>
+
+  <div id="register-form-container" style="display:none;">
+    <h3>Register</h3>
+    <form id="register-form" method="post">
+      {% csrf_token %}
+      {{ register_form.as_p }}
+      <button type="submit" name="submit" value="register">Register</button>
+    </form>
+    <p>If you already have an account, <a href="#" onclick="showLoginForm()">click here</a> to login.</p>
+  </div>
+
+  <script>
+    function showLoginForm() {
+      document.getElementById('login-form-container').style.display = 'block';
+      document.getElementById('register-form-container').style.display = 'none';
+    }
+
+    function showRegisterForm() {
+      document.getElementById('login-form-container').style.display = 'none';
+      document.getElementById('register-form-container').style.display = 'block';
+    }
+  </script>
+{% endblock %}

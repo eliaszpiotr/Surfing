@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Create Surf Spot</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Surf Spot</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div id="map"></div>
+        <button type="submit">Create</button>
+    </form>
+    <script>
+        var map = L.map('map').setView([0, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        function onMapClick(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('id_latitude').value = e.latlng.lat;
+            document.getElementById('id_longitude').value = e.latlng.lng;
+        }
+
+        map.on('click', onMapClick);
+    </script>
+</body>
+</html>

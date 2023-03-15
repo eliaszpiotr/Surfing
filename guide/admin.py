@@ -22,7 +22,7 @@ class DangerAdmin(admin.ModelAdmin):
 class SurfSpotAdmin(admin.ModelAdmin):
     list_display = ('name', 'continent', 'country', 'spot_type', 'wave_type', 'crowd', 'difficulty',)
     search_fields = ('name', 'continent', 'country', 'spot_type', 'wave_type',)
-    list_filter = ('continent', 'country', 'spot_type', 'wave_type', 'crowd', 'difficulty',)
+    list_filter = ('continent',)
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
