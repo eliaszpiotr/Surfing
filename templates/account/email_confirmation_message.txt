@@ -1,0 +1,10 @@
+Hello {{ user.username }},
+
+Thank you for registering with our service!
+
+To activate your account, please click on the following confirmation link:
+
+{{ activate_url }}
+
+Thank you,
+Your Service Team
