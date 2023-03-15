@@ -7,7 +7,7 @@
 <div class="container" style="width: 40rem;">
     <div class="row">
         <div class="col-md-12" style="margin-top: 15px;">
-            <h1>Register</h1>
+            <h1>Login</h1>
         </div>
     </div>
     <div class="container form-control" style="margin-top: 15px">
@@ -19,19 +19,12 @@
                         {{ form.username.label_tag }} {{ form.username|add_class:"form-control" }}
                     </div>
                     <div class="mb-3">
-                        {{ form.email.label_tag }} {{ form.email|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password1.label_tag }} {{ form.password1|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password2.label_tag }} {{ form.password2|add_class:"form-control" }}
+                        {{ form.password.label_tag }} {{ form.password|add_class:"form-control" }}
                     </div>
                     <input class="btn btn-outline-dark my-2" type="submit" value="Submit">
                 </form>
                 <div>
-                    <br><h6><a href="{% url 'login' %}" style="color: black">You already have an account? Login
-                    here!</a></h6>
+                    <br><h6><a href="{% url 'register' %}" style="color: black">You don't have an account? Register here!</a></h6>
                 </div>
             </div>
         </div>

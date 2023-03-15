@@ -10,6 +10,11 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField()
+    password = forms.CharField()
+
+
 class SurfSpotForm(forms.ModelForm):
     class Meta:
         model = SurfSpot
@@ -20,9 +25,3 @@ class SurfSpotForm(forms.ModelForm):
             'latitude': forms.HiddenInput(),
             'longitude': forms.HiddenInput(),
         }
-
-
-class LoginForm(AuthenticationForm):
-    username = forms.EmailField(widget=forms.TextInput(attrs={'class': 'validate', 'placeholder': 'Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
-

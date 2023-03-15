@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 
 from .forms import CustomUserCreationForm, SurfSpotForm, LoginForm
-from .models import SurfSpot
+from .models import SurfSpot, CustomUser
 
 
 class HomeView(View):
@@ -25,29 +25,30 @@ class SpotsListView(ListView):
     paginate_by = 10
 
 
-class LoginRegisterView(TemplateView):
-    template_name = 'guide/login_register.html'
+class RegisterView(FormView):
+    template_name = 'guide/register.html'
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('home')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['login_form'] = LoginForm()
-        context['register_form'] = CustomUserCreationForm()
-        return context
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return super().form_valid(form)
 
-    def post(self, request, *args, **kwargs):
-        if 'login' in request.POST:
-            form = LoginForm(request, data=request.POST)
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
-                return HttpResponseRedirect(reverse_lazy('home'))
-        elif 'register' in request.POST:
-            form = CustomUserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect(reverse_lazy('home'))
 
-        return self.render_to_response(self.get_context_data())
+class CustomLoginView(LoginView):
+    template_name = 'guide/login.html'
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', None)
+        if next_url:
+            return next_url
+        return reverse_lazy('home')
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        return super().form_valid(form)
 
 
 class CustomLogoutView(LogoutView):
