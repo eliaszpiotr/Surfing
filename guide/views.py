@@ -1,10 +1,11 @@
-from django.contrib.auth import login
-from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
+from django.contrib.auth import login
+from django.shortcuts import render
+from django.urls import reverse_lazy
 
 from .forms import CustomUserCreationForm, SurfSpotForm, UserProfileForm
 from .models import SurfSpot
@@ -34,6 +35,12 @@ class RegisterView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{form.fields[field].label}: {error}")
+        return super().form_invalid(form)
+
 
 class UserProfileFormView(FormView):
     template_name = 'guide/user_profile_form.html'
@@ -60,6 +67,10 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         login(self.request, form.get_user())
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Incorrect username or password.")
+        return super().form_invalid(form)
 
 
 class CustomLogoutView(LogoutView):

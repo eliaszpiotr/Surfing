@@ -1,40 +1,47 @@
 {% extends 'guide/base.html' %}
 {% load widget_tweaks %}
 {% block content %}
-<div class="container" style="width: 40rem;">
-    <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
-</div>
-<div class="container" style="width: 40rem;">
-    <div class="row">
-        <div class="col-md-12" style="margin-top: 15px;">
-            <h1>Register</h1>
-        </div>
+    <div class="container" style="width: 40rem;">
+        <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
     </div>
-    <div class="container form-control" style="margin-top: 15px">
+    <div class="container" style="width: 40rem;">
         <div class="row">
-            <div class="col-md-12 ">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        {{ form.username.label_tag }} {{ form.username|add_class:"form-control" }}
+            <div class="col-md-12" style="margin-top: 15px;">
+                <h1>Register</h1>
+            </div>
+        </div>
+        <div class="container form-control" style="margin-top: 15px">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.username.label_tag }} {{ form.username|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label_tag }} {{ form.email|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password1.label_tag }} {{ form.password1|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.password2.label_tag }} {{ form.password2|add_class:"form-control" }}
+                        </div>
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <input class="btn btn-outline-dark my-2" type="submit" value="Submit">
+                    </form>
+                    <div>
+                        <br><h6><a href="{% url 'login' %}" style="color: black">You already have an account? Login
+                        here!</a></h6>
                     </div>
-                    <div class="mb-3">
-                        {{ form.email.label_tag }} {{ form.email|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password1.label_tag }} {{ form.password1|add_class:"form-control" }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password2.label_tag }} {{ form.password2|add_class:"form-control" }}
-                    </div>
-                    <input class="btn btn-outline-dark my-2" type="submit" value="Submit">
-                </form>
-                <div>
-                    <br><h6><a href="{% url 'login' %}" style="color: black">You already have an account? Login
-                    here!</a></h6>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
