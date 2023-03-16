@@ -1,5 +1,5 @@
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
@@ -15,14 +15,6 @@ class HomeView(View):
 
     def get(self, request):
         return render(request, 'guide/base.html')
-
-
-class SpotsListView(ListView):
-    model = SurfSpot
-    template_name = 'guide/spots_list.html'
-    context_object_name = 'spots'
-    ordering = ['name']
-    paginate_by = 10
 
 
 class RegisterView(FormView):
@@ -82,3 +74,21 @@ class CreateSurfSpotView(CreateView):
     form_class = SurfSpotForm
     template_name = 'guide/create_surf_spot.htm'
     success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Surf spot successfully created!')
+        return response
+
+
+class SpotsListView(TemplateView):
+    template_name = 'guide/spots_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        selected_continent = self.request.GET.get('continent', 'EU')
+
+        context['selected_continent'] = selected_continent
+        context['spots'] = SurfSpot.objects.filter(continent=selected_continent)
+
+        return context

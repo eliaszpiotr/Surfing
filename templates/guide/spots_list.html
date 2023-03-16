@@ -1,0 +1,58 @@
+{% extends 'guide/base.html' %}
+{% block content %}
+
+    <style>
+        .nav-pills .nav-link {
+            color: black;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: black;
+            color: white;
+        }
+    </style>
+
+    <div class="container">
+        <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
+    </div>
+
+    <div class="container" style="margin-top: 30px">
+        <h2><b>Surfing spots around the World</b></h2>
+    </div>
+    <div class="container">
+        <ul class="nav nav-pills mb-3">
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'EU' %}active{% endif %}" href="?continent=EU">Europe</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'AS' %}active{% endif %}" href="?continent=AS">Asia</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'AF' %}active{% endif %}" href="?continent=AF">Africa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'NA' %}active{% endif %}" href="?continent=NA">North America</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'SA' %}active{% endif %}" href="?continent=SA">South America</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if selected_continent == 'OC' %}active{% endif %}" href="?continent=OC">Oceania</a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-sm-12">
+                {% for spot in spots %}
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <a href="" class="text-dark text-decoration-none">{{ spot.name }}, {{ spot.country }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
