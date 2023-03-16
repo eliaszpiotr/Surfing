@@ -1,26 +1,114 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Create Surf Spot</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% extends 'guide/base.html' %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
+        <h1>Create Surf Spot</h1>
+        <form id="create_surfspot_form" method="post">
+            {% csrf_token %}
+            <!-- page 1 -->
+            <div class="form-page" id="page1">
+                <div class="mb-3">
+                    {{ form.name.label_tag }} {{ form.name|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {% with form.description|add_class:"form-control" as description %}
+                        {{ description|attr:"rows:3" }}
+                    {% endwith %}
+                </div>
+                <div class="mb-3">
+                    {{ form.country.label_tag }} {{ form.country|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.continent.label_tag }} {{ form.continent|add_class:"form-control" }}
+                </div>
+                <div id="map" style="height: 350px; "></div>
+                <div class="mb-3">
+                    {{ form.latitude|add_class:"d-none" }}
+                    {{ form.longitude|add_class:"d-none" }}
+                </div>
+            </div>
+
+            <!-- page 2 -->
+            <div class="form-page" id="page2" style="display:none;">
+                <div class="mb-3">
+                    {{ form.best_wind.label_tag }} {{ form.best_wind|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.wave_direction.label_tag }} {{ form.wave_direction|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.spot_type.label_tag }} {{ form.spot_type|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.wave_type.label_tag }} {{ form.wave_type|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.swell_size.label_tag }} {{ form.swell_size|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <!-- page 3 -->
+            <div class="form-page" id="page3" style="display: none;">
+                <div class="mb-3">
+                    {{ form.crowd.label_tag }} {{ form.crowd|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.difficulty.label_tag }} {{ form.difficulty|add_class:"form-control" }}
+                </div>
+                <div class="mb-3">
+                    {{ form.danger.label_tag }} {{ form.danger|add_class:"form-control" }}
+                </div>
+            </div>
+            <button class="btn btn-outline-dark my-2" id="prev_button" type="button" onclick="prevPage()"
+                    style="display:none;">Previous
+            </button>
+            <button class="btn btn-outline-dark my-2" id="next_button" type="button" onclick="nextPage()">Next</button>
+            <button class="btn btn-outline-dark my-2" id="submit_button" type="submit" style="display:none;">Create
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <style>
-        #map {
-            height: 400px;
-            width: 1000px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Create Surf Spot</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div id="map"></div>
-        <button type="submit">Create</button>
-    </form>
     <script>
+        var totalPages = 3;
+        var currentPage = 1;
+
+        function updateFormPage() {
+            for (let i = 1; i <= totalPages; i++) {
+                document.getElementById(`page${i}`).style.display = i === currentPage ? 'block' : 'none';
+            }
+
+            document.getElementById('prev_button').style.display = currentPage === 1 ? 'none' : 'inline';
+            document.getElementById('next_button').style.display = currentPage === totalPages ? 'none' : 'inline';
+            document.getElementById('submit_button').style.display = currentPage === totalPages ? 'inline' : 'none';
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateFormPage();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updateFormPage();
+            }
+        }
+
+        updateFormPage();
+
+        // Map
         var map = L.map('map').setView([0, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -39,5 +127,5 @@
 
         map.on('click', onMapClick);
     </script>
-</body>
-</html>
+{% endblock %}
+
