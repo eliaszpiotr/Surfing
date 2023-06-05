@@ -3,11 +3,16 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <style>
+        #map {
+            height: 350px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <a onClick="javascript:history.go(-1);" class="btn btn-dark my-2">Back</a>
+        <a href="javascript:history.go(-1);" class="btn btn-dark my-2">Back</a>
         <h1>Create Surf Spot</h1>
         <form id="create_surfspot_form" method="post">
             {% csrf_token %}
@@ -28,8 +33,8 @@
                 <div class="mb-3">
                     {{ form.continent.label_tag }} {{ form.continent|add_class:"form-control" }}
                 </div>
-                <div id="map" style="height: 350px; "></div>
                 <div class="mb-3">
+                    <div id="map"></div>
                     {{ form.latitude|add_class:"d-none" }}
                     {{ form.longitude|add_class:"d-none" }}
                 </div>
@@ -120,7 +125,11 @@
         updateFormPage();
 
         // Map
-        var map = L.map('map').setView([0, 0], 2);
+        var map = L.map('map', {
+            minZoom: 2,
+            maxBounds: [[-90, -180], [90, 180]],
+            worldCopyJump: true
+        }).setView([0, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
