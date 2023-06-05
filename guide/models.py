@@ -22,16 +22,13 @@ class CustomUser(AbstractUser):
 
 
 class Surfboard(models.Model):
-    """
-    Model for surfboard
-    """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     brand = models.CharField(max_length=64, blank=True, null=True)
-    length = models.FloatField(blank=True, null=True)
-    width = models.FloatField(blank=True, null=True)
-    thickness = models.FloatField(blank=True, null=True)
-    volume = models.FloatField(blank=True, null=True)
+    length = models.CharField(max_length=10, blank=True, null=True)
+    width = models.CharField(max_length=10, blank=True, null=True)
+    thickness = models.CharField(max_length=10, blank=True, null=True)
+    volume = models.CharField(max_length=10, blank=True, null=True)
 
     class Construction(models.TextChoices):
         EPS_EPOXY = 'EPS/Epoxy', 'EPS/Epoxy'
@@ -68,6 +65,9 @@ class Surfboard(models.Model):
         OTHER = 'Other', 'Other'
 
     nose = models.CharField(max_length=64, choices=Nose.choices, blank=True, null=True)
+
+    def __str__(self):
+        return self.name, self.brand, self.length,
 
 
 class Danger(models.Model):
@@ -188,6 +188,8 @@ class SurfSpot(models.Model):
 
 
 class UserProfile(models.Model):
+    # TODO: add users continent maybe?
+
     """
     Model for user profile
     """
