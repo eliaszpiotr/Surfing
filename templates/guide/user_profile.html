@@ -1,0 +1,88 @@
+{% extends 'guide/base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="col">
+            <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
+
+            {% if user.is_authenticated %}
+                {% if profile_user.id == user.id %}
+                    <a href="" class="btn btn-outline-dark"
+                       style="margin-top: 15px; margin-left: 15px;">Profile Settings</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div>
+            <span style="font-weight: bold; font-size: 25px">@{{ profile_user.user.username }}</span><br>
+            <span style="margin-left: 10px;">{% if profile_user.country %}
+                {{ profile_user.country.name }}{% endif %}</span><br>
+            {% if profile_user.bio != None %}
+                <br>{{ profile_user.bio }}<br>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if profile_user.home_spot != None and profile_user.visited_spots != None %}
+        <div class="container">
+            <div class="row">
+                <div class="col-12 my-3">
+                    <h3>I've been there!</h3>
+                    <div id="map" class="map-container rounded my-4"
+                         style="height: 500px; width: 100%; margin: 0 auto; margin-top: 30px;"></div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <script>
+        var mapElement = document.querySelector('#map');
+        var map = L.map(mapElement, {
+            worldCopyJump: true,
+            maxBounds: [[-90, -180], [90, 180]]
+        });
+
+        map.setView([0, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Home Spot marker
+        {% if profile_user.home_spot %}
+            var homeSpotIcon = L.icon({
+                iconUrl: 'https://cdn.mapmarker.io/api/v1/font-awesome/v5/pin?icon=fa-home&size=40&hoffset=1',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+
+            var homeSpotMarker = L.marker(
+                [{{ profile_user.home_spot.latitude }}, {{ profile_user.home_spot.longitude }}],
+                {icon: homeSpotIcon}
+            ).addTo(map);
+            homeSpotMarker.bindPopup('<b>{{ profile_user.home_spot.name }}</b>');
+            homeSpotMarker.on('click', function () {
+                homeSpotMarker.openPopup();
+            });
+        {% endif %}
+
+        // Visited Spots markers
+        {% for spot in profile_user.visited_spots.all %}
+            {% if spot != profile_user.home_spot %}
+                var marker{{ forloop.counter }} = L.marker(
+                    [{{ spot.latitude }}, {{ spot.longitude }}]
+                ).addTo(map);
+                marker{{ forloop.counter }}.bindPopup('<b>{{ spot.name }}</b>');
+                marker{{ forloop.counter }}.on('click', function () {
+                    marker{{ forloop.counter }}.openPopup();
+                });
+            {% endif %}
+        {% endfor %}
+    </script>
+{% endblock %}
