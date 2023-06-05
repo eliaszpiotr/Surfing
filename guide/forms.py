@@ -20,16 +20,17 @@ class SurfSpotForm(forms.ModelForm):
         widgets = {
             'latitude': forms.HiddenInput(),
             'longitude': forms.HiddenInput(),
+            'danger': forms.CheckboxSelectMultiple(),
         }
 
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['country', 'bio', 'home_spot', 'profile_picture']
+        fields = ['country', 'bio', 'profile_picture']
         widgets = {
             'country': forms.Select(attrs={'class': 'form-control'}),
             'bio': forms.Textarea(attrs={'class': 'form-control'}),
-            'home_spot': forms.Select(attrs={'class': 'form-control'}),
+            # 'home_spot': forms.Select(attrs={'class': 'form-control'}),
             'profile_picture': forms.FileInput(attrs={'class': 'form-control'})
         }
