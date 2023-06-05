@@ -21,26 +21,53 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class UserProfile(models.Model):
+class Surfboard(models.Model):
     """
-    Model for user profile
+    Model for surfboard
     """
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-    country = CountryField(blank_label='(select country)', blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
-    home_spot = models.ForeignKey('SurfSpot', on_delete=models.SET_NULL, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=64)
+    brand = models.CharField(max_length=64, blank=True, null=True)
+    length = models.FloatField(blank=True, null=True)
+    width = models.FloatField(blank=True, null=True)
+    thickness = models.FloatField(blank=True, null=True)
+    volume = models.FloatField(blank=True, null=True)
 
-    def __str__(self):
-        return self.user.username
+    class Construction(models.TextChoices):
+        EPS_EPOXY = 'EPS/Epoxy', 'EPS/Epoxy'
+        PU_POLYESTER = 'PU/Polyester', 'PU/Polyester'
+        WOOD = 'Wood', 'Wood'
+        OTHER = 'Other', 'Other'
 
-    def get_absolute_url(self):
-        return reverse('user_profile', args=[str(self.id)])
+    construction = models.CharField(max_length=64, choices=Construction.choices, blank=True, null=True)
 
-    @receiver(post_save, sender=CustomUser)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
+    class FinSetup(models.TextChoices):
+        SINGLE_FIN = 'Single fin', 'Single fin'
+        TWIN_FIN = 'Twin fin', 'Twin fin'
+        THRUSTER = 'Thruster', 'Thruster'
+        QUAD = 'Quad', 'Quad'
+        FIVE_FIN = 'Five fin', 'Five fin'
+        OTHER = 'Other', 'Other'
+
+    fin_setup = models.CharField(max_length=64, choices=FinSetup.choices, blank=True, null=True)
+
+    class Tail(models.TextChoices):
+        PIN = 'Pin', 'Pin'
+        ROUND = 'Round', 'Round'
+        SQUARE = 'Square', 'Square'
+        SWALLOW = 'Swallow', 'Swallow'
+        SQUASH = 'Squash', 'Squash'
+        FISH = 'Fish', 'Fish'
+        OTHER = 'Other', 'Other'
+
+    tail = models.CharField(max_length=64, choices=Tail.choices, blank=True, null=True)
+
+    class Nose(models.TextChoices):
+        ROUND = 'Round', 'Round'
+        POINTED = 'Pointed', 'Pointed'
+        OTHER = 'Other', 'Other'
+
+    nose = models.CharField(max_length=64, choices=Nose.choices, blank=True, null=True)
 
 
 class Danger(models.Model):
@@ -60,6 +87,7 @@ class SurfSpot(models.Model):
 
     name = models.CharField(max_length=64, unique=True, blank=False, null=False)
     description = models.TextField()
+    # location = models.PointField(blank=False, null=False)
     country = CountryField(blank_label='(select country)', blank=False, null=False)
     latitude = models.FloatField(blank=False, null=False)
     longitude = models.FloatField(blank=False, null=False)
@@ -70,6 +98,7 @@ class SurfSpot(models.Model):
         EUROPE = 'EU', 'Europe'
         NORTH_AMERICA = 'NA', 'North America'
         SOUTH_AMERICA = 'SA', 'South America'
+        AUSTRALIA = 'AU', 'Australia'
         OCEANIA = 'OC', 'Oceania'
 
     continent = models.CharField(choices=Continent.choices, max_length=2, blank=False, null=False)
@@ -92,6 +121,12 @@ class SurfSpot(models.Model):
         B = 'B', 'Both'
 
     wave_direction = models.CharField(max_length=1, choices=WaveDirection.choices)
+
+    # class Tide(models.TextChoices):
+    #     H = 'H', 'High'
+    #     L = 'L', 'Low'
+    #
+    # best_tide = models.CharField(max_length=1, choices=Tide.choices)
 
     class SpotType(models.TextChoices):
         B = 'B', 'Beach break'
@@ -136,10 +171,42 @@ class SurfSpot(models.Model):
 
     difficulty = models.IntegerField(choices=Difficulty.choices, blank=True, null=True)
 
-    danger = models.ManyToManyField(Danger, blank=True)
+    danger = models.ManyToManyField(Danger, blank=True, )
+
+    class Verification(models.TextChoices):
+        VERIFIED = 'V', 'Verified'
+        UNVERIFIED = 'U', 'Unverified'
+        REJECTED = 'R', 'Rejected'
+
+    verification = models.CharField(default='U', max_length=1)
 
     def __str__(self):
         return f'{self.name}, {self.continent}'
 
     def get_absolute_url(self):
         return reverse('spot', kwargs={'pk': self.pk})
+
+
+class UserProfile(models.Model):
+    """
+    Model for user profile
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+    country = CountryField(blank_label='(select country)', blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    home_spot = models.ForeignKey('SurfSpot', on_delete=models.SET_NULL, blank=True, null=True, )
+    profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
+    visited_spots = models.ManyToManyField(SurfSpot, blank=True, related_name='visited_spots')
+    friends = models.ManyToManyField(CustomUser, blank=True, related_name='friends')
+    boards = models.ManyToManyField(Surfboard, blank=True, related_name='boards')
+
+    def __str__(self):
+        return self.user.username
+
+    def get_absolute_url(self):
+        return reverse('user_profile', args=[str(self.id)])
+
+    @receiver(post_save, sender=CustomUser)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
