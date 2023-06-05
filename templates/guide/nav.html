@@ -10,7 +10,7 @@
                 <a class="nav-link" style="width: 120px;" href="{% url 'spots_list' %}">Surfing Spots</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" style="width: 100px;" href="{% url 'create_surf_spot' %}">New Spot!</a>
+                <a class="nav-link" style="width: 140px;" href="{% url 'create_surf_spot' %}">Add a new spot</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link " style="width: 110px;" href="">Trip Planner</a>
@@ -20,7 +20,7 @@
             </li>
 
             {% if user.is_authenticated %}
-                <li class="nav-item" style="margin-left: 150%;">
+                <li class="nav-item" style="margin-left: 100%;">
                     <a class="nav-link" href="">@{{ user.username }}</a>
                 </li>
                 <li class="nav-item" style="margin-left: 10px;">
