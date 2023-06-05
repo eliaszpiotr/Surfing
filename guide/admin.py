@@ -11,11 +11,9 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'country', 'home_spot', 'profile_picture_thumbnail')
+    list_display = ('user', 'country', 'home_spot')
     search_fields = ('user__username', 'country')
     list_filter = ('country',)
-
-
 
 
 class DangerAdmin(admin.ModelAdmin):
@@ -30,8 +28,8 @@ class SurfSpotAdmin(admin.ModelAdmin):
 
 
 class SurfboardAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup',  'tail')
-    search_fields = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup',  'tail')
+    list_display = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup', 'tail')
+    search_fields = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup', 'tail')
     list_filter = ('brand', 'user')
 
 
