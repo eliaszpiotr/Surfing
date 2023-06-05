@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="container">
-        <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
+        <a onClick="javascript:history.go(-1);" class="btn btn-dark my-2">Back</a>
         <h1>Create Surf Spot</h1>
         <form id="create_surfspot_form" method="post">
             {% csrf_token %}
@@ -63,7 +63,7 @@
                     {{ form.difficulty.label_tag }} {{ form.difficulty|add_class:"form-control" }}
                 </div>
                 <div class="mb-3">
-                    {{ form.danger.label_tag }} {{ form.danger|add_class:"form-control" }}
+                    {{ form.danger.label_tag }} {{ form.danger}}
                 </div>
             </div>
             <button class="btn btn-outline-dark my-2" id="prev_button" type="button" onclick="prevPage()"
@@ -93,6 +93,17 @@
         }
 
         function nextPage() {
+            // Get all input elements on the current page
+            var inputs = document.querySelectorAll(`#page${currentPage} input, #page${currentPage} select, #page${currentPage} textarea`);
+
+            // Check if all inputs have a value
+            for (var i = 0; i < inputs.length; i++) {
+                if (!inputs[i].value) {
+                    alert('Please fill out all fields before continuing.');
+                    return;
+                }
+            }
+
             if (currentPage < totalPages) {
                 currentPage++;
                 updateFormPage();
@@ -128,4 +139,3 @@
         map.on('click', onMapClick);
     </script>
 {% endblock %}
-

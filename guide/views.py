@@ -11,12 +11,15 @@ from .forms import CustomUserCreationForm, SurfSpotForm, UserProfileForm
 from .models import SurfSpot
 
 
+# Home page
 class HomeView(View):
-
     def get(self, request):
-        return render(request, 'guide/base.html')
+        spots = SurfSpot.objects.all()
+        spots_count = spots.count()
+        return render(request, 'guide/home.html', {'spots': spots, 'spots_count': spots_count})
 
 
+# Login/Register features
 class RegisterView(FormView):
     template_name = 'guide/register.html'
     form_class = CustomUserCreationForm
@@ -32,18 +35,6 @@ class RegisterView(FormView):
             for error in errors:
                 messages.error(self.request, f"{form.fields[field].label}: {error}")
         return super().form_invalid(form)
-
-
-class UserProfileFormView(FormView):
-    template_name = 'guide/user_profile_form.html'
-    form_class = UserProfileForm
-    success_url = reverse_lazy('home')
-
-    def form_valid(self, form):
-        user_profile = form.save(commit=False)
-        user_profile.user = self.request.user
-        user_profile.save()
-        return super().form_valid(form)
 
 
 class CustomLoginView(LoginView):
@@ -69,6 +60,19 @@ class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('home')
 
 
+class UserProfileFormView(FormView):
+    template_name = 'guide/user_profile_form.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        user_profile = form.save(commit=False)
+        user_profile.user = self.request.user
+        user_profile.save()
+        return super().form_valid(form)
+
+
+# Forms
 class CreateSurfSpotView(CreateView):
     model = SurfSpot
     form_class = SurfSpotForm
@@ -81,6 +85,7 @@ class CreateSurfSpotView(CreateView):
         return response
 
 
+# Display
 class SpotsListView(TemplateView):
     template_name = 'guide/spots_list.html'
 
