@@ -4,19 +4,18 @@ from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth import login
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 
 from .forms import CustomUserCreationForm, SurfSpotForm, UserProfileForm
-from .models import SurfSpot
+from .models import SurfSpot, CustomUser, UserProfile
 
 
 # Home page
 class HomeView(View):
     def get(self, request):
         spots = SurfSpot.objects.all()
-        spots_count = spots.count()
-        return render(request, 'guide/home.html', {'spots': spots, 'spots_count': spots_count})
+        return render(request, 'guide/home.html', {'spots': spots, })
 
 
 # Login/Register features
@@ -97,3 +96,10 @@ class SpotsListView(TemplateView):
         context['spots'] = SurfSpot.objects.filter(continent=selected_continent)
 
         return context
+
+
+class UserProfileView(View):
+    def get(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(UserProfile, user_id=kwargs['pk'])
+        return render(request, 'guide/user_profile.html', {'profile_user': profile_user})
+
