@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, UserProfile, Danger, SurfSpot
+from .models import CustomUser, UserProfile, Danger, SurfSpot, Surfboard
 
 
 class CustomUserAdmin(admin.ModelAdmin):
@@ -25,7 +25,14 @@ class SurfSpotAdmin(admin.ModelAdmin):
     list_filter = ('continent',)
 
 
+class SurfboardAdmin(admin.ModelAdmin):
+    list_display = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup',  'tail')
+    search_fields = ('name', 'brand', 'length', 'width', 'thickness', 'volume', 'construction', 'fin_setup',  'tail')
+    list_filter = ('brand', 'user')
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Danger, DangerAdmin)
 admin.site.register(SurfSpot, SurfSpotAdmin)
+admin.site.register(Surfboard, SurfboardAdmin)
