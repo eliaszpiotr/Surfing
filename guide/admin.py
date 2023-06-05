@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from .models import CustomUser, UserProfile, Danger, SurfSpot, Surfboard
 
 
@@ -9,9 +11,11 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'country', 'home_spot',)
-    search_fields = ('user__username', 'country',)
+    list_display = ('user', 'country', 'home_spot', 'profile_picture_thumbnail')
+    search_fields = ('user__username', 'country')
     list_filter = ('country',)
+
+
 
 
 class DangerAdmin(admin.ModelAdmin):

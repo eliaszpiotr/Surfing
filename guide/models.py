@@ -67,7 +67,7 @@ class Surfboard(models.Model):
     nose = models.CharField(max_length=64, choices=Nose.choices, blank=True, null=True)
 
     def __str__(self):
-        return self.name, self.brand, self.length,
+        return f"{self.brand} {self.name} {self.length}"
 
 
 class Danger(models.Model):
