@@ -29,8 +29,11 @@
         }).addTo(map);
 
         {% for spot in spots %}
-            L.marker([{{ spot.latitude }}, {{ spot.longitude }}]).addTo(map)
-                .bindPopup('<b>{{ spot.name }}</b>');
+            var marker = L.marker([{{ spot.latitude }}, {{ spot.longitude }}]).addTo(map);
+            marker.bindPopup('<b>{{ spot.name }}</b>');
+            marker.on('click', function() {
+                this.openPopup();
+            });
         {% endfor %}
     </script>
 {% endblock %}
