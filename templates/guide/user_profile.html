@@ -5,29 +5,22 @@
         <div class="col">
             <a onClick="javascript:history.go(-1);" class="btn btn-dark" style="margin-top: 15px;">Back</a>
 
-            {% if user.is_authenticated %}
-                {% if profile_user.id == user.id %}
-                    <a href="" class="btn btn-outline-dark" style="margin-top: 15px; margin-left: 15px;">Profile
-                        Settings</a>
-                {% endif %}
-            {% endif %}
         </div>
     </div>
 
-    <div class="container my-4">
-        <div>
-            <div class="profile-info">
-                <div class="profile-picture">
-                    <img src="{% if profile_user.profile_picture %}{{ profile_user.profile_picture.url }}{% else %}{{ settings.MEDIA_URL }}profile_pictures/default.jpg{% endif %}" alt="Profile Picture" loading="lazy">
-                </div>
-                <div class="profile-name">
-                    <span style="font-weight: bold; font-size: 25px;">@{{ profile_user.user.username }}</span>, <span style="">{% if profile_user.country %}{{ profile_user.country.name }}{% endif %}</span><br>
-                </div>
+     <div class="container my-4">
+        <div class="profile-info" style="display: flex; align-items: center;">
+            <div class="profile-picture">
+                <img src="{{ profile_user.profile_picture.url }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
             </div>
-            {% if profile_user.bio %}
-                <br>{{ profile_user.bio }}<br>
-            {% endif %}
+            <div class="profile-name">
+                <span style="font-weight: bold; font-size: 25px;">@{{ profile_user.user.username }}</span>, <span
+                    style="">{% if profile_user.country %}{{ profile_user.country.name }}{% endif %}</span><br>
+            </div>
         </div>
+        {% if profile_user.bio %}
+            <br>{{ profile_user.bio }}<br>
+        {% endif %}
     </div>
 
     {% if profile_user.home_spot and profile_user.visited_spots %}
@@ -91,24 +84,4 @@
             {% endif %}
         {% endfor %}
     </script>
-
-    <style>
-        .profile-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .profile-picture img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-    </style>
 {% endblock %}
-
-
-
-
-

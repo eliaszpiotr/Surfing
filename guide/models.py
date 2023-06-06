@@ -197,7 +197,7 @@ class UserProfile(models.Model):
     country = CountryField(blank_label='(select country)', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     home_spot = models.ForeignKey('SurfSpot', on_delete=models.SET_NULL, blank=True, null=True, )
-    profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures', default='profile_pictures/def.jpeg')
     visited_spots = models.ManyToManyField(SurfSpot, blank=True, related_name='visited_spots')
     friends = models.ManyToManyField(CustomUser, blank=True, related_name='friends')
     boards = models.ManyToManyField(Surfboard, blank=True, related_name='boards')

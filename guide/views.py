@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from .forms import CustomUserCreationForm, SurfSpotForm, UserProfileForm
 from .models import SurfSpot, CustomUser, UserProfile
@@ -102,4 +103,3 @@ class UserProfileView(View):
     def get(self, request, *args, **kwargs):
         profile_user = get_object_or_404(UserProfile, user_id=kwargs['pk'])
         return render(request, 'guide/user_profile.html', {'profile_user': profile_user})
-
