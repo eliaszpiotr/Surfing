@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Surfers' Guide</title>
+    <title>ThatSurfer</title>
     <link href="{% static 'bootstrap-5.2.2-dist/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <script src="{% static 'bootstrap-5.2.2-dist/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
@@ -11,6 +11,31 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+
+<style>
+        /* Sticky footer */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* minimalna wysokość viewport'u */
+        }
+
+        footer {
+            background-color: #f8f9fa; /* tło stopki (jasnoszare) */
+            padding: 5px 0; /* redukcja odstępów w stopce */
+            margin-top: auto; /* "przyklejenie" do dołu */
+        }
+
+        .footer-info {
+            font-size: 0.8rem; /* zmniejszenie wielkości czcionki */
+            line-height: 1.1; /* mniejszy odstęp pomiędzy liniami */
+        }
+
+        .footer-info p {
+            margin-bottom: 0.2rem; /* mniejszy odstęp pomiędzy paragrafami */
+        }
+    </style>
+
 {% include 'guide/nav.html' %}
 
 {% for message in messages %}
@@ -28,6 +53,20 @@
 {% endblock %}
 
 
-
+<!-- Footer -->
+<footer class="text-center py-1">
+    <div class="container footer-info">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>THATSURFER</h4>
+                <p>&copy; 2023 THATSURFER. All rights reserved for author.</p>
+            </div>
+            <div class="col-sm-6 my-2">
+                <p>Contact: <a href="mailto:eliasz.piotr@icloud.com" class="text-decoration-none text-dark">eliasz.piotr@icloud.com</a></p>
+                <p>GitHub: <a href="https://github.com/eliaszpiotr" class="text-decoration-none text-dark" target="_blank">eliaszpiotr</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
