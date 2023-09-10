@@ -1,0 +1,79 @@
+{% extends 'guide/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <!-- Spot Name -->
+        <h2 class="card-title my-2">{{ spot.name }}</h2>
+
+        <!-- Spot Location and Description -->
+        <h6 class="card-subtitle mb-2 text-muted">{{ spot.country }}, {{ spot.get_continent_display }}</h6>
+        <p>{{ spot.description }}</p>
+
+        <!-- Map using Latitude and Longitude (Using Leaflet as an example) -->
+        <div id="map" style="height: 400px;"></div>
+
+
+        <!-- Table with other details -->
+        <h2 class="card-title my-2">Spot details</h2>
+        <table class="table mt-4">
+            <tbody>
+            <tr>
+                <td>Spot Type</td>
+                <td>{{ spot.get_spot_type_display }}</td>
+            </tr>
+            <tr>
+                <td>Best Wind Direction</td>
+                <td>{{ spot.get_best_wind_display }}</td>
+            </tr>
+            <tr>
+                <td>Wave Direction</td>
+                <td>{{ spot.get_wave_direction_display }}</td>
+            </tr>
+            <tr>
+                <td>Spot Type</td>
+                <td>{{ spot.get_spot_type_display }}</td>
+            </tr>
+            <tr>
+                <td>Wave Type</td>
+                <td>{{ spot.get_wave_type_display }}</td>
+            </tr>
+            <tr>
+                <td>Swell Size</td>
+                <td>{{ spot.get_swell_size_display }}</td>
+            </tr>
+            <tr>
+                <td>Crowd</td>
+                <td>{{ spot.get_crowd_display }}</td>
+            </tr>
+            <tr>
+                <td>Difficulty</td>
+                <td>{{ spot.get_difficulty_display }}</td>
+            </tr>
+            <!-- More fields can be added as required -->
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <h4>Dangers</h4>
+            <ul>
+                {% for danger in spot.danger.all %}
+                    <li><p class="text-danger">{{ danger }}</p></li>
+                {% empty %}
+                    <li>The spot is safe!</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Adding Leaflet CSS and JS if not already included in base.html -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([{{ spot.latitude }}, {{ spot.longitude }}], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([{{ spot.latitude }}, {{ spot.longitude }}]).addTo(map)
+            .bindPopup('{{ spot.name }}').openPopup();
+    </script>
+{% endblock %}
