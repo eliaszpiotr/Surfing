@@ -12,6 +12,7 @@ urlpatterns = [
     path('create_surf_spot/', views.CreateSurfSpotView.as_view(), name='create_surf_spot'),
     path('spots_list/', views.SpotsListView.as_view(), name='spots_list'),
     path('user_profile/<int:pk>/', views.UserProfileView.as_view(), name='user_profile'),
+    path('surf_spot/<int:pk>/', views.SurfSpotView.as_view(), name='surf_spot'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

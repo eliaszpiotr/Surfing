@@ -47,7 +47,7 @@
                 {% for spot in spots %}
                     <div class="card my-2">
                         <div class="card-body">
-                            <a href="" class="text-dark text-decoration-none">{{ spot.name }}, {{ spot.country }}</a>
+                            <a href="{% url 'surf_spot' spot.pk %}" class="text-dark text-decoration-none">{{ spot.name }}, {{ spot.country }}</a>
                         </div>
                     </div>
                 {% endfor %}

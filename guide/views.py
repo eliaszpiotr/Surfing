@@ -103,3 +103,10 @@ class UserProfileView(View):
     def get(self, request, *args, **kwargs):
         profile_user = get_object_or_404(UserProfile, user_id=kwargs['pk'])
         return render(request, 'guide/user_profile.html', {'profile_user': profile_user})
+
+
+class SurfSpotView(View):
+    def get(self, request, *args, **kwargs):
+        spot = get_object_or_404(SurfSpot, id=kwargs['pk'])
+        return render(request, 'guide/surf_spot.html', {'spot': spot})
+
