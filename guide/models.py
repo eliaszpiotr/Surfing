@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.gis.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -186,6 +188,14 @@ class SurfSpot(models.Model):
     def get_absolute_url(self):
         return reverse('spot', kwargs={'pk': self.pk})
 
+    def verify(self):
+        self.verification = 'V'
+        self.save()
+
+    def reject(self):
+        self.verification = 'R'
+        self.save()
+
 
 class UserProfile(models.Model):
     # TODO: add users continent maybe?
@@ -200,7 +210,8 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pictures', default='profile_pictures/def.jpeg')
     visited_spots = models.ManyToManyField(SurfSpot, blank=True, related_name='visited_spots')
     friends = models.ManyToManyField(CustomUser, blank=True, related_name='friends')
-    boards = models.ManyToManyField(Surfboard, blank=True, related_name='boards')
+
+    # boards = models.ManyToManyField(Surfboard, blank=True, related_name='boards')
 
     def __str__(self):
         return self.user.username
@@ -212,3 +223,93 @@ class UserProfile(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             UserProfile.objects.create(user=instance)
+
+
+class Comment(models.Model):
+    """
+    Model for comment on a spot
+    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    spot = models.ForeignKey(SurfSpot, on_delete=models.CASCADE)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.spot.name}'
+
+    def get_absolute_url(self):
+        return reverse('spot', kwargs={'pk': self.spot.pk})
+
+
+class Rating(models.Model):
+    """
+    Model for rating a spot
+    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    spot = models.ForeignKey(SurfSpot, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    def __str__(self):
+        return f'{self.user.username} - {self.spot.name}'
+
+    def get_absolute_url(self):
+        return reverse('spot', kwargs={'pk': self.spot.pk})
+
+
+class Photo(models.Model):
+    """
+    Model for photo of a spot
+    """
+    spot = models.ForeignKey(SurfSpot, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='spot_photos')
+    date = models.DateTimeField(auto_now_add=True)
+    caption = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.spot.name} - {self.photo.name}'
+
+    def get_absolute_url(self):
+        return reverse('spot', kwargs={'pk': self.spot.pk})
+
+
+class Report(models.Model):
+    """
+    Model for reporting a spot
+    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    spot = models.ForeignKey(SurfSpot, on_delete=models.CASCADE)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.spot.name}'
+
+    def get_absolute_url(self):
+        return reverse('spot', kwargs={'pk': self.spot.pk})
+
+
+class Message(models.Model):
+    """
+    Model for messaging a user
+    """
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='receiver')
+    text = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.sender.username} - {self.receiver.username}'
+
+    def get_absolute_url(self):
+        return reverse('message', kwargs={'pk': self.pk})
+
+
+class SurfingMeeting(models.Model):
+    spot = models.ForeignKey(SurfSpot, on_delete=models.CASCADE)
+    organizer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="organized_meetings")
+    date_time = models.DateTimeField()
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="meetings_joined", blank=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Meeting at {self.spot.name} on {self.date_time.strftime('%Y-%m-%d %H:%M')}"
